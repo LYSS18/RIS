@@ -24,15 +24,15 @@ class PerformanceAnalyzer:
             if os.path.exists(improved_model_path):
                 self.improved_trajectory_model = tf.keras.models.load_model(improved_model_path)
                 self.has_improved_model = True
-                print("✅ 改进轨迹预测模型加载成功")
+                print("改进轨迹预测模型加载成功")
             else:
                 self.improved_trajectory_model = None
                 self.has_improved_model = False
-                print("⚠️ 改进轨迹预测模型未找到，将跳过Improved TPC方法")
+                print("改进轨迹预测模型未找到，将跳过Improved TPC方法")
         except Exception as e:
             self.improved_trajectory_model = None
             self.has_improved_model = False
-            print(f"⚠️ 改进轨迹预测模型加载失败: {e}")
+            print(f"改进轨迹预测模型加载失败: {e}")
 
     def _predict_trajectory_improved(self, trajectory_points, steps_to_predict=10):
         """使用改进的轨迹预测模型进行预测"""
@@ -92,7 +92,7 @@ class PerformanceAnalyzer:
             return improved_prediction
 
         except Exception as e:
-            print(f"⚠️ 改进轨迹预测失败，使用原始模型: {e}")
+            print(f"改进轨迹预测失败，使用原始模型: {e}")
             return self.trajectory_predictor.predict_trajectory(trajectory_points, steps_to_predict)
 
     def analyze_power_levels(self, power_levels=None, save_results=True):
@@ -100,7 +100,7 @@ class PerformanceAnalyzer:
         if power_levels is None:
             power_levels = POWER_LEVELS
 
-        print(f"🚀 开始功率分析 - {len(power_levels)}个功率级别")
+        print(f"开始功率分析 - {len(power_levels)}个功率级别")
 
         # Setup simulation environment
         base_station_location = (
@@ -120,13 +120,13 @@ class PerformanceAnalyzer:
         )
 
         # Predict trajectories (batch processing)
-        print("🧠 轨迹预测处理...")
+        print("轨迹预测处理...")
         user_main = self.trajectory_predictor.predict_trajectory(user_main, 10)
         for i in range(NUM_INTERFERENCE_USERS):
             user_interference[i] = self.trajectory_predictor.predict_trajectory(user_interference[i], 10)
 
         # Pre-calculate network assignments (optimization)
-        print("🌐 计算网络分配...")
+        print("计算网络分配...")
         station_ris_main = self.network_selector.get_nearest_station_and_ris_for_points(user_main, 10)
 
         results = {
@@ -139,7 +139,7 @@ class PerformanceAnalyzer:
         if self.has_improved_model:
             results['improved_tpc'] = []
 
-        print("📊 开始SINR计算...")
+        print("开始SINR计算...")
         for idx, power in enumerate(power_levels):
             print(f"  处理功率级别 {idx+1}/{len(power_levels)}: {power:.3f}W")
 
@@ -162,7 +162,7 @@ class PerformanceAnalyzer:
         if save_results:
             self._save_analysis_results(results, 'power_analysis')
 
-        print("✅ 功率分析完成!")
+        print("功率分析完成!")
         return results
     
     def analyze_element_counts(self, element_counts=None, save_results=True):
@@ -170,7 +170,7 @@ class PerformanceAnalyzer:
         if element_counts is None:
             element_counts = ELEMENT_COUNTS
 
-        print(f"🚀 开始元素数量分析 - {len(element_counts)}个元素级别")
+        print(f"开始元素数量分析 - {len(element_counts)}个元素级别")
 
         # Setup simulation environment (similar to power analysis)
         base_station_location = (
@@ -178,7 +178,7 @@ class PerformanceAnalyzer:
             self.network_selector.grid[4211][2]
         )
 
-        print("📍 生成用户轨迹...")
+        print("生成用户轨迹...")
         user_main = load_trajectory_data(DATA_PATH, NUM_TRAJECTORY_POINTS)
         if not user_main:
             user_main = generate_random_points(base_station_location, SIMULATION_RADIUS, NUM_TRAJECTORY_POINTS)
@@ -188,7 +188,7 @@ class PerformanceAnalyzer:
         )
 
         # Predict trajectories (batch processing)
-        print("🧠 轨迹预测处理...")
+        print("轨迹预测处理...")
         user_main = self.trajectory_predictor.predict_trajectory(user_main, 10)
         for i in range(NUM_INTERFERENCE_USERS):
             user_interference[i] = self.trajectory_predictor.predict_trajectory(user_interference[i], 10)
@@ -204,10 +204,10 @@ class PerformanceAnalyzer:
             results['improved_tpc'] = []
         
         # Pre-calculate network assignments once (major optimization)
-        print("🌐 计算网络分配...")
+        print("计算网络分配...")
         station_ris_main = self.network_selector.get_nearest_station_and_ris_for_points(user_main, 10)
 
-        print("📊 开始SINR计算...")
+        print("开始SINR计算...")
         for idx, elements in enumerate(element_counts):
             print(f"  处理元素数量 {idx+1}/{len(element_counts)}: {elements}个元素")
 
@@ -227,7 +227,7 @@ class PerformanceAnalyzer:
         if save_results:
             self._save_analysis_results(results, 'element_analysis')
 
-        print("✅ 元素数量分析完成!")
+        print("元素数量分析完成!")
         return results
     
     def _calculate_sinr_for_methods(self, user_main, station_ris_main, user_interference,

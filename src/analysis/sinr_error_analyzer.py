@@ -28,15 +28,15 @@ class SINRErrorAnalyzer:
             if os.path.exists(improved_model_path):
                 self.improved_trajectory_model = tf.keras.models.load_model(improved_model_path)
                 self.has_improved_model = True
-                print("✅ 改进轨迹预测模型加载成功")
+                print(" 改进轨迹预测模型加载成功")
             else:
                 self.improved_trajectory_model = None
                 self.has_improved_model = False
-                print("⚠️ 改进轨迹预测模型未找到，将只分析原始TPC方法")
+                print(" 改进轨迹预测模型未找到，将只分析原始TPC方法")
         except Exception as e:
             self.improved_trajectory_model = None
             self.has_improved_model = False
-            print(f"⚠️ 改进轨迹预测模型加载失败: {e}")
+            print(f" 改进轨迹预测模型加载失败: {e}")
     
     def _predict_trajectory_improved(self, trajectory_points, steps_to_predict=10):
         """使用改进的轨迹预测模型进行预测"""
@@ -78,7 +78,7 @@ class SINRErrorAnalyzer:
             return improved_prediction
 
         except Exception as e:
-            print(f"⚠️ 改进轨迹预测失败，使用原始模型: {e}")
+            print(f" 改进轨迹预测失败，使用原始模型: {e}")
             return self.trajectory_predictor.predict_trajectory(trajectory_points, steps_to_predict)
     
     def _calculate_sinr_error(self, predicted_trajectory, ground_truth_trajectory,
@@ -140,14 +140,14 @@ class SINRErrorAnalyzer:
         if power_levels is None:
             power_levels = POWER_LEVELS
 
-        print(f"🚀 开始功率误差分析 - {len(power_levels)}个功率级别")
+        print(f" 开始功率误差分析 - {len(power_levels)}个功率级别")
 
         base_station_location = (
             self.network_selector.grid[4211][1],
             self.network_selector.grid[4211][2]
         )
 
-        print("📍 生成用户轨迹...")
+        print(" 生成用户轨迹...")
         user_main_original = load_trajectory_data(DATA_PATH, NUM_TRAJECTORY_POINTS)
         if not user_main_original:
             user_main_original = generate_random_points(base_station_location, SIMULATION_RADIUS, NUM_TRAJECTORY_POINTS)
@@ -156,7 +156,7 @@ class SINRErrorAnalyzer:
             base_station_location, SIMULATION_RADIUS, NUM_INTERFERENCE_USERS, NUM_TRAJECTORY_POINTS
         )
 
-        print("🧠 轨迹预测处理...")
+        print(" 轨迹预测处理...")
         for i in range(NUM_INTERFERENCE_USERS):
             user_interference[i] = self.trajectory_predictor.predict_trajectory(user_interference[i], 10)
 
@@ -167,7 +167,7 @@ class SINRErrorAnalyzer:
 
         user_main_ground_truth = user_main_original + user_main_original[-10:]
 
-        print("🌐 计算网络分配...")
+        print(" 计算网络分配...")
         station_ris_main = self.network_selector.get_nearest_station_and_ris_for_points(user_main_ground_truth, 10)
 
         results = {
@@ -177,7 +177,7 @@ class SINRErrorAnalyzer:
         if self.has_improved_model:
             results['improved_tpc_error'] = []
 
-        print("📊 开始SINR误差计算...")
+        print(" 开始SINR误差计算...")
         for idx, power in enumerate(power_levels):
             print(f"  处理功率级别 {idx+1}/{len(power_levels)}: {power:.3f}W")
 
@@ -197,7 +197,7 @@ class SINRErrorAnalyzer:
         if save_results:
             self._save_error_results(results, 'power_error_analysis')
 
-        print("✅ 功率误差分析完成!")
+        print(" 功率误差分析完成!")
         return results
 
     def analyze_element_error(self, element_counts=None, save_results=True):
@@ -205,14 +205,14 @@ class SINRErrorAnalyzer:
         if element_counts is None:
             element_counts = ELEMENT_COUNTS
 
-        print(f"🚀 开始元素误差分析 - {len(element_counts)}个元素级别")
+        print(f" 开始元素误差分析 - {len(element_counts)}个元素级别")
 
         base_station_location = (
             self.network_selector.grid[4211][1],
             self.network_selector.grid[4211][2]
         )
 
-        print("📍 生成用户轨迹...")
+        print(" 生成用户轨迹...")
         user_main_original = load_trajectory_data(DATA_PATH, NUM_TRAJECTORY_POINTS)
         if not user_main_original:
             user_main_original = generate_random_points(base_station_location, SIMULATION_RADIUS, NUM_TRAJECTORY_POINTS)
@@ -221,7 +221,7 @@ class SINRErrorAnalyzer:
             base_station_location, SIMULATION_RADIUS, NUM_INTERFERENCE_USERS, NUM_TRAJECTORY_POINTS
         )
 
-        print("🧠 轨迹预测处理...")
+        print(" 轨迹预测处理...")
         for i in range(NUM_INTERFERENCE_USERS):
             user_interference[i] = self.trajectory_predictor.predict_trajectory(user_interference[i], 10)
 
@@ -232,7 +232,7 @@ class SINRErrorAnalyzer:
 
         user_main_ground_truth = user_main_original + user_main_original[-10:]
 
-        print("🌐 计算网络分配...")
+        print(" 计算网络分配...")
         station_ris_main = self.network_selector.get_nearest_station_and_ris_for_points(user_main_ground_truth, 10)
 
         results = {
@@ -242,7 +242,7 @@ class SINRErrorAnalyzer:
         if self.has_improved_model:
             results['improved_tpc_error'] = []
 
-        print("📊 开始SINR误差计算...")
+        print(" 开始SINR误差计算...")
         for idx, elements in enumerate(element_counts):
             print(f"  处理元素数量 {idx+1}/{len(element_counts)}: {elements}个元素")
 
@@ -262,7 +262,7 @@ class SINRErrorAnalyzer:
         if save_results:
             self._save_error_results(results, 'element_error_analysis')
 
-        print("✅ 元素误差分析完成!")
+        print(" 元素误差分析完成!")
         return results
 
     def _save_error_results(self, results, filename):
@@ -276,7 +276,7 @@ class SINRErrorAnalyzer:
         with open(filepath, 'w') as f:
             json.dump(results, f, indent=2)
 
-        print(f"📁 误差分析结果已保存到: {filepath}")
+        print(f" 误差分析结果已保存到: {filepath}")
 
     def plot_error_analysis(self, power_results=None, element_results=None):
         """绘制SINR误差分析图表"""
@@ -286,15 +286,15 @@ class SINRErrorAnalyzer:
 
         if power_results:
             plotter.plot_power_error_analysis(power_results)
-            print("📊 功率误差分析图表已生成")
+            print(" 功率误差分析图表已生成")
 
         if element_results:
             plotter.plot_element_error_analysis(element_results)
-            print("📊 元素误差分析图表已生成")
+            print(" 元素误差分析图表已生成")
 
     def run_complete_error_analysis(self):
         """运行完整的SINR误差分析"""
-        print("🔬 开始完整SINR误差分析")
+        print(" 开始完整SINR误差分析")
         print("=" * 60)
 
         # 功率误差分析
@@ -306,13 +306,13 @@ class SINRErrorAnalyzer:
         element_results = self.analyze_element_error()
 
         # 生成图表
-        print("\n📊 生成误差分析图表...")
+        print("\n 生成误差分析图表...")
         self.plot_error_analysis(power_results, element_results)
 
         print("\n" + "=" * 60)
-        print("✅ 完整SINR误差分析完成!")
-        print("📁 结果文件保存在 results/ 目录")
-        print("📊 图表文件保存在 results/ 目录")
+        print(" 完整SINR误差分析完成!")
+        print(" 结果文件保存在 results/ 目录")
+        print(" 图表文件保存在 results/ 目录")
         print("=" * 60)
 
         return power_results, element_results
