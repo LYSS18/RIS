@@ -81,7 +81,7 @@ def main():
     # 构建特征矩阵
     features = data_clean[['lat', 'lon', 'speed', 'angle']]
     print(f"\n最终特征数据形状：{features.shape}")
-    print("✅ 确认使用所有4个特征：")
+    print(" 确认使用所有4个特征：")
     print("  - lat: 纬度坐标")
     print("  - lon: 经度坐标") 
     print("  - speed: 清理后的速度")
@@ -111,7 +111,7 @@ def main():
     print(f"\n数据集构造完成:")
     print(f"X shape: {X.shape} (样本数, 时间步, 特征数)")
     print(f"Y shape: {Y.shape} (样本数, 预测坐标)")
-    print(f"✅ 每个样本使用{time_step}个时间步，每个时间步包含4个特征")
+    print(f"每个样本使用{time_step}个时间步，每个时间步包含4个特征")
     
     # 5. 划分数据集
     train_size = int(len(X) * 0.8)
@@ -144,7 +144,7 @@ def main():
     model.add(Dense(units=2))
     model.add(Activation('linear'))
     
-    print("✅ 精细平滑模型架构确认:")
+    print("精细平滑模型架构确认:")
     print(f"  - 输入: (batch_size, {time_step}, 4) - {time_step}个时间步，4个特征")
     print("  - 双向LSTM层1: 130单元")
     print("  - 双向LSTM层2: 90单元")
@@ -235,31 +235,8 @@ def main():
     
     improvement = ((avg_error_orig - avg_error_smooth) / avg_error_orig) * 100
     
-    print(f"\n训练完成！模型性能对比:")
-    print(f"原始预测:")
-    print(f"  平均误差: {avg_error_orig:.2f}m")
-    print(f"  30m内精度: {accuracy_30m_orig:.2f}%")
-    print(f"  40m内精度: {accuracy_40m_orig:.2f}%")
-    print(f"  50m内精度: {accuracy_50m_orig:.2f}%")
-    print(f"  80m内精度: {accuracy_80m_orig:.2f}%")
-    
-    print(f"\n精细平滑后预测（多次平滑）:")
-    print(f"  平均误差: {avg_error_smooth:.2f}m")
-    print(f"  30m内精度: {accuracy_30m_smooth:.2f}%")
-    print(f"  40m内精度: {accuracy_40m_smooth:.2f}%")
-    print(f"  50m内精度: {accuracy_50m_smooth:.2f}%")
-    print(f"  80m内精度: {accuracy_80m_smooth:.2f}%")
-    print(f"  方向稳定性: {direction_stability_smooth:.4f}")
-    
-    print(f"\n平滑改进: {improvement:.1f}%")
-    print(f"训练轮数: {len(history.history['loss'])}")
-    
-    print(f"\n特征使用验证:")
-    print("✅ 所有4个特征都被模型有效利用:")
-    print(f"  - lat (纬度): 范围 {data['lat'].min():.6f} ~ {data['lat'].max():.6f}")
-    print(f"  - lon (经度): 范围 {data['lon'].min():.6f} ~ {data['lon'].max():.6f}")
-    print(f"  - speed (速度): 清理后范围 0 ~ {speed_95:.2f} km/h")
-    print(f"  - angle (角度): 范围 0 ~ {data['angle'].max():.2f} 度")
+    print(f"\n训练完成！")
+
     
     # 12. 绘制训练历史
     print("\n绘制训练历史...")
@@ -305,9 +282,8 @@ def main():
     plt.show()
     
     print("\n" + "="*80)
-    print("精细平滑4特征双向LSTM轨迹预测模型训练完成！")
+    print("轨迹预测模型训练完成！")
     print("="*80)
-    print("🏆 历史性突破指标：")
     print(f"- 精细平滑后平均误差：{avg_error_smooth:.2f}m")
     print(f"- 30m内精度：{accuracy_30m_smooth:.2f}%")
     print(f"- 40m内精度：{accuracy_40m_smooth:.2f}%")
@@ -315,21 +291,9 @@ def main():
     print(f"- 80m内精度：{accuracy_80m_smooth:.2f}%")
     print(f"- 方向稳定性：{direction_stability_smooth:.4f}")
     print(f"- 平滑改进：{improvement:.1f}%")
-    
-    print(f"\n🔑 关键技术：")
-    print("- 全特征利用：lat, lon, speed, angle")
-    print(f"- 时间窗口：{time_step}（关键突破）")
-    print("- 精细学习率：0.004")
-    print("- 精细正则化：Dropout 0.22")
-    print("- 多次平滑：3次迭代，递减窗口")
-    print("- 优化双向LSTM架构：130+90单元")
-    print("- 速度清理：95%分位数过滤")
-    print("="*80)
-    print("✅ 成功使用所有4个特征，无一遗漏！")
-    print("🎯 这是目前最先进的精细平滑全特征轨迹预测模型！")
     print("📊 训练历史图表已保存为 training_history.png")
     print("💾 模型文件已保存为 model.keras")
-    print("🚀 历史性突破：36.06m的超高精度和0.1661的超强平滑性！")
+
 
 if __name__ == "__main__":
     main()
