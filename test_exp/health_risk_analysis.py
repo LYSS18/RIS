@@ -405,7 +405,7 @@ def create_prediction_error_analysis_plots(results, save_dir):
     # 保存图表
     plot_path = os.path.join(save_dir, 'prediction_error_analysis.png')
     plt.savefig(plot_path, dpi=300, bbox_inches='tight')
-    print(f"📊 轨迹预测误差分析图表已保存: {plot_path}")
+    print(f" 轨迹预测误差分析图表已保存: {plot_path}")
 
     return plot_path
 
@@ -422,17 +422,17 @@ def main():
     distance_errors = np.linspace(0, 500, 101)  # 0到500米，101个点
     angle_errors = np.linspace(1, 30, 101)      # 1到30度角度误差
 
-    print(f"📏 分析轨迹预测距离误差范围: 0-500米 ({len(distance_errors)}个采样点)")
-    print(f"📐 分析轨迹预测角度误差范围: 1-30度 ({len(angle_errors)}个采样点)")
-    print(f"🎯 扩大误差范围以充分体现误差传播趋势")
+    print(f" 分析轨迹预测距离误差范围: 0-500米 ({len(distance_errors)}个采样点)")
+    print(f" 分析轨迹预测角度误差范围: 1-30度 ({len(angle_errors)}个采样点)")
+    print(f" 扩大误差范围以充分体现误差传播趋势")
 
     # 进行误差分析
-    print("🔬 正在计算误差传播链条...")
+    print(" 正在计算误差传播链条...")
     print("   距离/角度误差 → SINR降级 → PER → 监测延迟 → 生命安全风险")
     results = analyzer.analyze_prediction_error_impact(distance_errors, angle_errors)
 
     # 创建图表
-    print("📊 正在生成误差分析图表...")
+    print(" 正在生成误差分析图表...")
     plot_path = create_prediction_error_analysis_plots(results, save_dir)
     
     # 保存数值结果
@@ -462,11 +462,11 @@ def main():
     with open(results_path, 'w', encoding='utf-8') as f:
         json.dump(results_data, f, indent=2, ensure_ascii=False)
 
-    print(f"💾 误差分析数值结果已保存: {results_path}")
+    print(f"  误差分析数值结果已保存: {results_path}")
     
     # 关键发现
     print("\n" + "=" * 70)
-    print("🎯 误差分析关键发现:")
+    print(" 误差分析关键发现:")
 
     # 找到5%风险阈值对应的距离误差 (安全阈值)
     acceptable_risk = 0.05  # R_acceptable = 5%
@@ -476,10 +476,10 @@ def main():
     exceed_indices = np.where(comprehensive_risks > acceptable_risk)[0]
     if len(exceed_indices) > 0:
         critical_distance = distance_errors[exceed_indices[0]]
-        print(f"⚠️  当轨迹预测距离误差超过 {critical_distance:.1f}米 时，")
+        print(f" 当轨迹预测距离误差超过 {critical_distance:.1f}米 时，")
         print(f"   综合健康风险超过设定的5%安全阈值 (R_acceptable)")
     else:
-        print("✅ 在测试范围内，所有轨迹预测误差的健康风险均在可接受范围内")
+        print(" 在测试范围内，所有轨迹预测误差的健康风险均在可接受范围内")
 
     # 显示关键数值
     max_risk_idx = np.argmax(comprehensive_risks)
@@ -488,7 +488,7 @@ def main():
     max_sinr_degradation = max(results['sinr_degradations'])
     max_delay = max(results['monitoring_delays'])
 
-    print(f"\n📊 误差分析统计:")
+    print(f"\n 误差分析统计:")
     print(f"   最大SINR降级: {max_sinr_degradation:.2f} dB (距离误差: {max_risk_distance:.1f}米)")
     print(f"   最大监测延迟: {max_delay:.2f}秒")
     print(f"   最大心脏风险: {max(results['cardiac_risks'])*100:.2f}%")
